@@ -28,6 +28,10 @@
 #define RCC_APB1ENR_UART3 (1 << 18)
 
 start:
+	@@@ XXX: FIRST ORDER OF BUSINESS MUST BE TO SET UP THE WATCHDOG
+	@@@ TIMER, and to check for a button press to crash back into PRF! 
+	@@@ Let's try NOT to brick any watches, if we can avoid it.
+	
 	ldr r0, =RCC_APB1ENR
 	ldr r1, [r0]
 	orr r1, r1, #RCC_APB1ENR_UART3
