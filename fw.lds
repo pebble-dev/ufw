@@ -4,7 +4,6 @@ OUTPUT_ARCH(arm)
 
 SECTIONS
 {
-  /* Read-only sections, merged into text segment: */
   . = 0x08004000;
   
   .text : {
@@ -12,11 +11,23 @@ SECTIONS
     *(.text);
     *(SORT(.table.*));
   }
-  .data : { *(.data); *(.data2); }
   .rodata : { *(.rodata); }
   
+  . = 0x20000000;
+  _data_vma = .;
+  _data_lma = ADDR(.rodata) + SIZEOF(.rodata);
+  .data : AT (ADDR(.rodata) + SIZEOF(.rodata)) {
+    *(.data);
+    . = ALIGN(4);
+  }
+  _data_size = SIZEOF(.data);
+  
   _bss = .;
-  .bss : { *(.bss); }
+  .bss : {
+    *(.bss);
+    . = ALIGN(4);
+  }
+  _bss_size = SIZEOF(.bss);
   _bssend = .;
   _end = .;
 }
