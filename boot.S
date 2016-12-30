@@ -57,29 +57,16 @@ start:
 	
 	@ set up the stack
 	ldr sp, =_stack_top
+
+	blx main
 	
 	@@@ XXX: FIRST ORDER OF BUSINESS MUST BE TO SET UP THE WATCHDOG
 	@@@ TIMER, and to check for a button press to crash back into PRF! 
 	@@@ Let's try NOT to brick any watches, if we can avoid it.
 	
-	ldr r0, =RCC_APB1ENR
-	ldr r1, [r0]
-	orr r1, r1, #RCC_APB1ENR_UART3
-	str r1, [r0]
-	
-	ldr r0, =(UARTDBG + UART_DR)
-	ldr r2, =str
-1:	ldrb r1, [r2], #1
-	strb r1, [r0]
-	cmp r1, #0
-	it ne
-	bne 1b
 1:	wfi
 	b 1b
 
-	.data
-str:	.ascii "hello, tiny-firmware pebble!\n\0"
-	
 	.bss
 _stack_bottom:
 	.skip 4096
