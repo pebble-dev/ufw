@@ -10,9 +10,9 @@ CC = $(PFX)gcc
 ASFLAGS += -ggdb
 CFLAGS += -g
 
-CFLAGS += -mcpu=cortex-m3 -mthumb -Icmsis
+CFLAGS += -mcpu=cortex-m3 -mthumb -Icmsis -Istm32f2/inc -DUSE_STDPERIPH_DRIVER -std=c99
 
-OBJS = boot.o main.o
+OBJS = boot.o  stm32f2/stm32f2xx_gpio.o stm32f2/stm32f2xx_rcc.o stm32f2/stm32f2xx_spi.o main.o
 
 target: fw.qemu_flash.bin
 
