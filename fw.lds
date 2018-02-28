@@ -4,23 +4,18 @@ OUTPUT_ARCH(arm)
 
 SECTIONS
 {
-  . = 0x08004000;
-  
+  . = 0x20000000;
   .text : {
     *(.start);
     *(.text);
     *(SORT(.table.*));
   }
   .rodata : { *(.rodata); }
-  
-  . = 0x20000000;
-  _data_vma = .;
-  _data_lma = ADDR(.rodata) + SIZEOF(.rodata);
-  .data : AT (ADDR(.rodata) + SIZEOF(.rodata)) {
+
+  .data : {
     *(.data);
     . = ALIGN(4);
   }
-  _data_size = SIZEOF(.data);
   
   _bss = .;
   .bss : {
@@ -30,4 +25,6 @@ SECTIONS
   _bss_size = SIZEOF(.bss);
   _bssend = .;
   _end = .;
+  _ram_top = 0x20000000 + 128*1024;
+
 }

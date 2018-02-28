@@ -3,16 +3,6 @@
 	.code 16
 
 	.section .start
-	
-	.word _stack_top
-	.word start + 1
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0x4e65576f
-
 	.text
 #define UART_SR_TXE (1 << 7)
 #define UART_SR (0x00)
@@ -27,21 +17,6 @@
 #define RCC_APB1ENR_UART3 (1 << 18)
 
 start:
-	@ relocate .data to RAM
-	ldr r0, =_data_vma
-	ldr r1, =_data_lma
-	ldr r2, =_data_size
-	lsr r2, r2, #2
-	
-1:	cmp r2, #0
-	it eq
-	beq 2f
-	ldr r3, [r1], #4
-	str r3, [r0], #4
-	add r2, r2, -1
-	b 1b
-2:
-
 	@ zero out bss
 	ldr r0, =_bss
 	ldr r2, =_bss_size

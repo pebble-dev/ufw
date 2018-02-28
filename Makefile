@@ -10,11 +10,11 @@ CC = $(PFX)gcc
 ASFLAGS += -ggdb
 CFLAGS += -g
 
-CFLAGS += -mcpu=cortex-m3 -mthumb -Icmsis -Istm32f2/inc -DUSE_STDPERIPH_DRIVER -std=c99
+CFLAGS += -mcpu=cortex-m3 -mthumb -Icmsis -Istm32f2/inc -DUSE_STDPERIPH_DRIVER -std=c99 -I.
 
-OBJS = boot.o  stm32f2/stm32f2xx_gpio.o stm32f2/stm32f2xx_rcc.o stm32f2/stm32f2xx_spi.o main.o
+OBJS = boot.o  stm32f2/stm32f2xx_gpio.o stm32f2/stm32f2xx_rcc.o stm32f2/stm32f2xx_spi.o main.o minilib.o fmt.o
 
-target: fw.qemu_flash.bin
+target: fw.elf
 
 qemu: fw.qemu_flash.bin
 	qemu-pebble -rtc base=localtime -serial null -serial null -serial stdio -gdb tcp::63770,server -machine pebble-bb2 -cpu cortex-m3 -pflash fw.qemu_flash.bin $(QEMUFLAGS)
@@ -23,7 +23,7 @@ gdb:
 	$(PFX)gdb -ex 'target remote localhost:63770' -ex 'sym fw.elf'
 
 fw.elf: $(OBJS) fw.lds
-	$(PFX)ld -o $@ -T fw.lds $(OBJS) 
+	$(PFX)gcc -mcpu=cortex-m3 -mthumb -g -o $@ -Wl,-Tfw.lds -nostartfiles -nostdlib $(OBJS)  -lgcc
 
 %.bin: %.elf
 	$(PFX)objcopy $< -O binary $@
